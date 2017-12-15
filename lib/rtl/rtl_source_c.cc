@@ -221,7 +221,7 @@ rtl_source_c::rtl_source_c (const std::string &args)
       throw std::runtime_error("Failed to enable offset tuning.");
   }
 
-  ret = rtlsdr_set_bias_tee(_dev, bias_tee);
+  ret = 0;// rtlsdr_set_bias_tee(_dev, bias_tee);
   if (ret < 0)
     throw std::runtime_error("Failed to set bias tee.");
 

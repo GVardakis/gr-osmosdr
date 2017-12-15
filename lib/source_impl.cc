@@ -117,7 +117,8 @@ source_impl::source_impl( const std::string &args )
   : gr::hier_block2 ("source_impl",
         gr::io_signature::make(0, 0, 0),
         args_to_io_signature(args)),
-    _sample_rate(NAN)
+    _sample_rate(NAN),
+	_msg_port(pmt::mp("command"))
 {
   size_t channel = 0;
   bool device_specified = false;
@@ -439,6 +440,11 @@ source_impl::source_impl( const std::string &args )
       connect(throttle, 0, self(), channel++);
   }
 #endif
+
+  message_port_register_in(_msg_port);
+  d_thread = boost::shared_ptr<gr::thread::thread>
+    (new gr::thread::thread(boost::bind(&source_impl::cmd_handler, this)));
+
 }
 
 size_t source_impl::get_num_channels()
@@ -984,4 +990,17 @@ void source_impl::set_time_unknown_pps(const osmosdr::time_spec_t &time_spec)
   {
     dev->set_time_unknown_pps( time_spec );
   }
+}
+
+void source_impl::cmd_handler()
+{
+	pmt::pmt_t msg = delete_head_blocking(_msg_port);
+	  float gain = int(pmt::to_float(
+	      pmt::dict_ref(
+	        msg, pmt::mp("gain"),
+	        pmt::from_float(-1)
+	      )
+	  ));
+	  set_gain(gain,0);
+
 }

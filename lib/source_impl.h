@@ -90,6 +90,7 @@ public:
   void set_time_now(const ::osmosdr::time_spec_t &time_spec, size_t mboard = 0);
   void set_time_next_pps(const ::osmosdr::time_spec_t &time_spec);
   void set_time_unknown_pps(const ::osmosdr::time_spec_t &time_spec);
+  void cmd_handler();
 
 private:
   std::vector< source_iface * > _devs;
@@ -103,6 +104,8 @@ private:
   std::map< size_t, double > _if_gain;
   std::map< size_t, double > _bb_gain;
   std::map< size_t, std::string > _antenna;
+  pmt::pmt_t _msg_port;
+  boost::shared_ptr<gr::thread::thread> d_thread;
 #ifdef HAVE_IQBALANCE
   std::vector< gr::iqbalance::fix_cc * > _iq_fix;
   std::vector< gr::iqbalance::optimize_c * > _iq_opt;

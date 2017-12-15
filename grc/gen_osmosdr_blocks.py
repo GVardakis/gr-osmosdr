@@ -198,11 +198,17 @@ self.\$(id).set_bandwidth(\$bw$(n), $n)
   <check>$max_mboards >= \$num_mboards</check>
   <check>\$num_mboards > 0</check>
   <check>\$nchan >= \$num_mboards</check>
+  <sink>
+    <name>command</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
   <$sourk>
     <name>$dir</name>
     <type>\$type.type</type>
     <nports>\$nchan</nports>
   </$sourk>
+
   <doc>
 The osmocom $sourk block:
 
